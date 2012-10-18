@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.sql.*;
 public interface DBManager {
 	void init(String fileName) throws IOException;
-	void insert(ArrayList array);
-	void update(ArrayList array);
-	ResultSet search(ArrayList array);
+	void insert(ArrayList array); // generics!
+	void update(ArrayList array); // generics!
+	ResultSet search(ArrayList array); // generics!
 }
