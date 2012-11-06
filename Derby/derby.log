@@ -1,0 +1,13 @@
+----------------------------------------------------------------
+Wed Oct 17 23:37:16 EDT 2012:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.9.1.0 - (1344872): instance a816c00e-013a-71f2-4d29-ffffce673ca0 
+on database directory /home/xialin/Documents/eclipse/Research/Derby/firstdb  with class loader sun.misc.Launcher$AppClassLoader@1cde100 
+Loaded from file:/home/xialin/Documents/eclipse/Research/lib/derby.jar
+java.vendor=Sun Microsystems Inc.
+java.runtime.version=1.6.0_24-b24
+user.dir=/home/xialin/Documents/eclipse/Research
+derby.system.home=/home/xialin/Documents/eclipse/Research/Derby
+Database Class Loader started - derby.database.classpath=''
+----------------------------------------------------------------
+Wed Oct 17 23:37:17 EDT 2012:
+Shutting down instance a816c00e-013a-71f2-4d29-ffffce673ca0 on database directory /home/xialin/Documents/eclipse/Research/Derby/firstdb with class loader sun.misc.Launcher$AppClassLoader@1cde100 
