@@ -17,7 +17,7 @@ public abstract class DefaultDbManager implements DBManager {
 		// TODO
 		/**
 		 * @step Connect to correct database and create if necessary.
-		 */
+		 *
 //		DriverManager.getConnection("jdbc:derby:"+DB_NAME+";create=true;");
 		/**
 		 * @step Return success status of connection.

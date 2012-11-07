@@ -1,12 +1,20 @@
 package db;
 
+//import DangleDbManager;
+
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import reader.DangleFileIO;
 
 import com.atled.core.db.DefaultDbManager;
 import com.atled.core.db.definitions.DatabaseDefinition;
@@ -70,9 +78,11 @@ public class DangleDbManager extends DefaultDbManager {
 		 * @step connect to db. If connection failed, return false
 		 */
 		openConnection();
-		/**
-		 * @step If the table does not exist in the database, this method creates it else, if 
+		/*		 
 		 * it does exist, this method truncates the table.
+		 * 
+		 * WHAT DOES TRUNCATE MEAN
+		 * 
 		 */
 		try {
 			Statement st = con.createStatement();
@@ -96,6 +106,9 @@ public class DangleDbManager extends DefaultDbManager {
 	}
 
 	@Override
+	/**
+	 * You would never insert into the database? 0_o
+	 */
 	public boolean insert(List<String> array) throws SQLException {
 		// TODO
 		/**
@@ -110,6 +123,8 @@ public class DangleDbManager extends DefaultDbManager {
 		/**
 		 * @step return success of insertion
 		 */
+		
+		
 		return false;
 	}
 

@@ -3,7 +3,7 @@ import java.io.*;
 import java.util.*;
 
 public interface MfeParameterFileIO {
-	
+
 	/**
 	 * @step Ensure that filename is not null and file exists
 	 * @step parse the file and convert to <code>List</code> of <code>List</code> of <code>Strings</code>
@@ -12,8 +12,9 @@ public interface MfeParameterFileIO {
 	 * @param filename
 	 * @return Never null. Returns empty list if there was an exception
 	 * @throws IllegalArgumentException if filename is null or file does not exist
+	 * @throws FileNotFoundException 
 	 */
-	public List<List<String>> read(String filename) throws IllegalArgumentException;
+	public List<List<String>> read(String filename) throws IllegalArgumentException, FileNotFoundException;
 	
 	/**
 	 * @step Ensure that filename is not null

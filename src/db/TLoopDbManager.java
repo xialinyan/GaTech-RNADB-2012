@@ -25,20 +25,14 @@ public class TLoopDbManager extends DefaultDbManager {
 		 * @step If the table does not exist in the database, this method creates it else, if 
 		 * it does exist, this method truncates the table.
 		 */
-//		st.executeUpdate("CREATE TABLE DANGLE( " +
-//		"'ID'	INT	PRIMARY KEY, " +
-//		"'LOWERBP'	VARCHAR(1)	NOT NULL, " +
-//		"'UPPERBP'	VARCHAR(1)	NOT NULL, " +
-//		"'DANGLEB'	VARCHAR(1)	NOT NULL, " +
-//		"'PRIMESTART'	VARCHAR(1) NOT NULL, " +
-//		"'VALUE'	FLOAT");
+
 		/**
 		 * @step This method should use a class which implements the ReadFile interface to get 
 		 * the parameters to insert.
 		 */
 		/**
 		 * @step Once this method has the results from ReadFile, it should call this.insert(...) for
-		 * each parameter. Ensure that each entry was inserted sucessfully.
+		 * each parameter. Ensure that each entry was inserted successfully.
 		 */
 		/**
 		 * @step return sucess of initialization

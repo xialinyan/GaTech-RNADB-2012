@@ -1,13 +1,31 @@
 package reader;
 
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 public class StackFileIO implements MfeParameterFileIO {
-
+	FileReader fileReader;
+	List<List<String>> data;
+	Scanner scan;
 	@Override
-	public List<List<String>> read(String filename) throws IllegalArgumentException {
+	public List<List<String>> read(String filename) throws IllegalArgumentException, FileNotFoundException {
 		// TODO
+		fileReader = new FileReader(filename);
+		scan = new Scanner(fileReader);
+		data = new ArrayList<List<String>>();
+		for(int i=0; i<16; i++){
+			String[] arr = new String[16];
+			arr = scan.nextLine().trim().split("\\s+");
+			ArrayList<String> temp = new ArrayList<String>();
+			for(int j=0; j<16; j++){
+				temp.add(j,arr[j]);
+			}
+			data.add(i,temp);
+		}
 		/**
 		 * @step Ensure that filename is not null and file exists
 		 */
