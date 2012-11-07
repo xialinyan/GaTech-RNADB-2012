@@ -4,17 +4,23 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
+import com.atled.core.db.DefaultDbManager;
+import com.atled.core.db.definitions.DatabaseDefinition;
+
 public class TLoopDbManager extends DefaultDbManager {
 	
+	public TLoopDbManager(DatabaseDefinition databaseDefinition) {
+		super(databaseDefinition);
+		// TODO
+	}
+
 	@Override
 	public boolean init(String fileName) throws IOException {
 		// TODO 
 		/**
 		 * @step connect to db. If connection failed, return false
 		 */
-		if (openConnection()) {
-			return false;
-		}
+		openConnection();
 		/**
 		 * @step If the table does not exist in the database, this method creates it else, if 
 		 * it does exist, this method truncates the table.
@@ -34,10 +40,6 @@ public class TLoopDbManager extends DefaultDbManager {
 		 * @step Once this method has the results from ReadFile, it should call this.insert(...) for
 		 * each parameter. Ensure that each entry was inserted sucessfully.
 		 */
-		/**
-		 * @step set initialized to true
-		 */
-		isInitialized = true;
 		/**
 		 * @step return sucess of initialization
 		 */
