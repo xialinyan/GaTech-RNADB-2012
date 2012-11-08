@@ -3,6 +3,8 @@ import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
+
+import com.atled.core.db.fields.DatabaseEntry;
 public interface DBManager {
 	
 	/**
@@ -17,7 +19,7 @@ public interface DBManager {
 	 * @step return sucess of initialization
 	 * 
 	 * @param fileName
-	 * @retun 
+	 * @return 
 	 * @throws IOException
 	 */
 	public boolean init(String fileName) throws IOException;
@@ -32,7 +34,7 @@ public interface DBManager {
 	 * @return
 	 * @throws SQLException 
 	 */
-	public boolean insert(List<String> array) throws SQLException;
+	public boolean insert(List<DatabaseEntry> array) throws SQLException;
 	
 	/**
 	 * @step ensure db is connected and initialized

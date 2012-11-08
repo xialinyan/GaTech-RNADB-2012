@@ -18,85 +18,85 @@ public class LoopDbManager extends DefaultDbManager {
 	public boolean init(String fileName) throws IOException {
 		// TODO 
 
-		Connection con = null;
-		Statement st = null;
-		List<List<String>> value = new ArrayList<List<String>>();
-		DangleFileIO dangle;
-		loop = new LoopFileIO();
-		value = loop.read("loop.DAT");
-		
-		
-
-		String url = "jdbc:derby:loopDb;create=true";
-		
-		try {
-			System.setProperty("derby.system.home", 
-		                    "/home/xialin/Documents/eclipse/Research/Derby");
-			con = DriverManager.getConnection(url);
-			st = con.createStatement();
-			st.executeUpdate("CREATE TABLE LOOP( " +
-			"'ID'	VARCHAR(3)	PRIMARY KEY, " +
-			"'SIZE'	VARCHAR(2)	NOT NULL, " +
-			"'TYPE'	VARCHAR(1)	NOT NULL, " +
-			"'VALUE'	FLOAT");
-			
-			for(int i=0; i<30; i++){
-				for(int j=0; j<4; j++){
-					String val = value.get(i).get(j);
-					String size = "" + (i+1);
-					String pKey = "";
-					String type;
-					if (i<10){
-						pKey+= "0" + i;
-					}
-					else{
-						pKey += i;
-					}
-					
-					if(j==1){
-						pKey += "I";
-						type = "I";	
-					}
-					else if(j == 2){
-						pKey += "B";
-						type = "B";	
-					}
-					else if(j == 3){
-						pKey += "H";
-						type = "H";	
-					}
-					st.executeUpdate("INSERT INTO LOOP VALUES(pKey, size, type, val");
-				}
-			}
-			
-			
-			System.gc();
-			DriverManager.getConnection("jdbc:derby:loopDb;shutdown=true");
-			}
-		catch (SQLException ex) {
-			Logger lgr = Logger.getLogger(LoopDbManager.class.getName());
-			if (((ex.getErrorCode() == 50000)
-					&& ("XJ015".equals(ex.getSQLState())))) {
-				lgr.log(Level.INFO, "Derby shut down normally", ex);
-				}
-			else {
-				lgr.log(Level.SEVERE, ex.getMessage(), ex);
-				}
-			}
-		finally{
-			try{
-				if (st != null){
-					st.close();
-					}
-				if (con != null){
-					con.close();
-					}
-				}
-			catch (SQLException ex){
-				Logger lgr = Logger.getLogger(LoopDbManager.class.getName());
-				lgr.log(Level.WARNING, ex.getMessage(), ex);
-				}
-			}
+//		Connection con = null;
+//		Statement st = null;
+//		List<List<String>> value = new ArrayList<List<String>>();
+//		DangleFileIO dangle;
+//		loop = new LoopFileIO();
+//		value = loop.read("loop.DAT");
+//		
+//		
+//
+//		String url = "jdbc:derby:loopDb;create=true";
+//		
+//		try {
+//			System.setProperty("derby.system.home", 
+//		                    "/home/xialin/Documents/eclipse/Research/Derby");
+//			con = DriverManager.getConnection(url);
+//			st = con.createStatement();
+//			st.executeUpdate("CREATE TABLE LOOP( " +
+//			"'ID'	VARCHAR(3)	PRIMARY KEY, " +
+//			"'SIZE'	VARCHAR(2)	NOT NULL, " +
+//			"'TYPE'	VARCHAR(1)	NOT NULL, " +
+//			"'VALUE'	FLOAT");
+//			
+//			for(int i=0; i<30; i++){
+//				for(int j=0; j<4; j++){
+//					String val = value.get(i).get(j);
+//					String size = "" + (i+1);
+//					String pKey = "";
+//					String type;
+//					if (i<10){
+//						pKey+= "0" + i;
+//					}
+//					else{
+//						pKey += i;
+//					}
+//					
+//					if(j==1){
+//						pKey += "I";
+//						type = "I";	
+//					}
+//					else if(j == 2){
+//						pKey += "B";
+//						type = "B";	
+//					}
+//					else if(j == 3){
+//						pKey += "H";
+//						type = "H";	
+//					}
+//					st.executeUpdate("INSERT INTO LOOP VALUES(pKey, size, type, val");
+//				}
+//			}
+//			
+//			
+//			System.gc();
+//			DriverManager.getConnection("jdbc:derby:loopDb;shutdown=true");
+//			}
+//		catch (SQLException ex) {
+//			Logger lgr = Logger.getLogger(LoopDbManager.class.getName());
+//			if (((ex.getErrorCode() == 50000)
+//					&& ("XJ015".equals(ex.getSQLState())))) {
+//				lgr.log(Level.INFO, "Derby shut down normally", ex);
+//				}
+//			else {
+//				lgr.log(Level.SEVERE, ex.getMessage(), ex);
+//				}
+//			}
+//		finally{
+//			try{
+//				if (st != null){
+//					st.close();
+//					}
+//				if (con != null){
+//					con.close();
+//					}
+//				}
+//			catch (SQLException ex){
+//				Logger lgr = Logger.getLogger(LoopDbManager.class.getName());
+//				lgr.log(Level.WARNING, ex.getMessage(), ex);
+//				}
+//			}
 		    
 		/**
 		 * @step connect to db. If connection failed, return false

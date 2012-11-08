@@ -3,54 +3,55 @@ package db;
 //import DangleDbManager;
 
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
-import reader.DangleFileIO;
+import turner99parsing.DangleFileIO;
 
 import com.atled.core.db.DefaultDbManager;
-import com.atled.core.db.definitions.DatabaseDefinition;
-import com.atled.core.db.definitions.DatabaseFieldDefinition;
-import com.atled.core.db.definitions.DatabaseFieldDefinition.FieldCharacteristics;
-import com.atled.core.db.definitions.DatabaseTableDefinition;
-import com.atled.core.db.definitions.VarcharField;
+import com.atled.core.db.fields.DatabaseEntry;
+import com.atled.core.db.fields.definitions.DatabaseDefinition;
+import com.atled.core.db.fields.definitions.DatabaseFieldDefinition;
+import com.atled.core.db.fields.definitions.DatabaseFieldDefinition.FieldCharacteristics;
+import com.atled.core.db.fields.definitions.DatabaseTableDefinition;
+import com.atled.core.db.fields.definitions.VarcharFieldDefinition;
 import com.atled.core.exceptions.ExceptionHandler;
+
+import db.entry.DangleEntry;
 
 
 public class DangleDbManager extends DefaultDbManager {
 	
 	public final static DatabaseDefinition DATABASE_DEFINITION;
 	public final static DatabaseTableDefinition DATABASE_TABLE_DEFINITION;
-	public final static VarcharField PAIR_TYPE_FIELD;
-	public final static VarcharField LEAD_NUCLEOTIDE_FIELD;
-	public final static VarcharField TAIL_NUCLEOTIDE_FIELD;
-	public final static VarcharField DANGLE_NUCLEOTIDE_FIELD;
-	public final static VarcharField ARRAY_INDEX_FIELD;
-	public final static VarcharField PARAM_VALUE_FIELD;
+	public final static VarcharFieldDefinition PAIR_TYPE_FIELD;
+	public final static VarcharFieldDefinition LEAD_NUCLEOTIDE_FIELD;
+	public final static VarcharFieldDefinition TAIL_NUCLEOTIDE_FIELD;
+	public final static VarcharFieldDefinition DANGLE_NUCLEOTIDE_FIELD;
+	public final static VarcharFieldDefinition ARRAY_INDEX_FIELD;
+	public final static VarcharFieldDefinition PARAM_VALUE_FIELD;
+	
+	public final static DangleFileIO dangleFileIO;
 	
 	static {
-		PAIR_TYPE_FIELD = new VarcharField("pairTypeField", "pairTypeField", 4); // TODO enum field definition?
-		LEAD_NUCLEOTIDE_FIELD = new VarcharField("leadNucleotideField", 
+		PAIR_TYPE_FIELD = new VarcharFieldDefinition("pairTypeField", "pairTypeField", 4); // TODO enum field definition?
+		LEAD_NUCLEOTIDE_FIELD = new VarcharFieldDefinition("leadNucleotideField", 
 				"leadNucleotideField", 1); // TODO enum field definition?
-		TAIL_NUCLEOTIDE_FIELD = new VarcharField("tailNucleotideField", 
+		TAIL_NUCLEOTIDE_FIELD = new VarcharFieldDefinition("tailNucleotideField", 
 				"tailNucleotideField", 1); // TODO enum field definition?
-		DANGLE_NUCLEOTIDE_FIELD = new VarcharField("dangleNucleotideField", 
+		DANGLE_NUCLEOTIDE_FIELD = new VarcharFieldDefinition("dangleNucleotideField", 
 				"dangleNucleotideField", 1); // TODO enum field definition?
 		List<FieldCharacteristics> fieldChars = 
 				new ArrayList<DatabaseFieldDefinition.FieldCharacteristics>();
 		fieldChars.add(FieldCharacteristics.PRIMARY_KEY);
 		fieldChars.add(FieldCharacteristics.NOT_NULL);
-		ARRAY_INDEX_FIELD = new VarcharField("arrayIndexField", 
+		ARRAY_INDEX_FIELD = new VarcharFieldDefinition("arrayIndexField", 
 				"arrayIndexField", fieldChars, 5);
-		PARAM_VALUE_FIELD = new VarcharField("paramValueField", 
+		PARAM_VALUE_FIELD = new VarcharFieldDefinition("paramValueField", 
 				"paramValueField", 10);
 		{
 			List<DatabaseFieldDefinition> fields = new ArrayList<DatabaseFieldDefinition>();
@@ -66,6 +67,8 @@ public class DangleDbManager extends DefaultDbManager {
 		List<DatabaseTableDefinition> tables = new ArrayList<DatabaseTableDefinition>();
 		tables.add(DATABASE_TABLE_DEFINITION);
 		DATABASE_DEFINITION = new DatabaseDefinition("", "", tables);
+		
+		dangleFileIO = new DangleFileIO();
 	}
 	
 	public DangleDbManager() {
@@ -78,11 +81,8 @@ public class DangleDbManager extends DefaultDbManager {
 		 * @step connect to db. If connection failed, return false
 		 */
 		openConnection();
-		/*		 
+		/**
 		 * it does exist, this method truncates the table.
-		 * 
-		 * WHAT DOES TRUNCATE MEAN
-		 * 
 		 */
 		try {
 			Statement st = con.createStatement();
@@ -94,22 +94,34 @@ public class DangleDbManager extends DefaultDbManager {
 		 * @step This method should use a class which implements the ReadFile interface to get 
 		 * the parameters to insert.
 		 */
-		
+		List<List<String>> paramArray = dangleFileIO.read(fileName);
+		List<DatabaseEntry> entryList = new ArrayList<DatabaseEntry>();
+		for (int i=0;i<paramArray.size();i++) {
+			for (int j=0;j<paramArray.get(i).size();j++) {
+				entryList.add(new DangleEntry(i, j, paramArray.get(i).get(j)));
+			}
+		}
 		/**
 		 * @step Once this method has the results from ReadFile, it should call this.insert(...) for
 		 * each parameter. Ensure that each entry was inserted sucessfully.
 		 */
+		boolean insertResult = false;
+		try {
+			insertResult = insert(entryList);
+		} catch (SQLException e) {
+			ExceptionHandler.handle(e);
+		}
 		/**
 		 * @step return sucess of initialization
 		 */
-		return false;
+		return insertResult;
 	}
 
 	@Override
 	/**
 	 * You would never insert into the database? 0_o
 	 */
-	public boolean insert(List<String> array) throws SQLException {
+	public boolean insert(List<DatabaseEntry> array) throws SQLException {
 		// TODO
 		/**
 		 * @step ensure db is connected and initialized
