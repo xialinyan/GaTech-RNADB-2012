@@ -1,14 +1,14 @@
 import java.util.ArrayList;
 import java.util.List;
 
-import com.atled.core.db.definitions.DatabaseFieldDefinition;
+import com.atled.core.db.fields.definitions.DatabaseFieldDefinition;
 import com.atled.core.db.query.SqlTableSelectQuery;
 import com.atled.core.db.query.constraints.SqlQueryConstraintCollection;
 import com.atled.core.db.query.constraints.SqlQueryConstraintCollection.QueryCondition;
-import com.atled.core.db.query.constraints.SqlRangeQueryConstraint.RangeQueryOperation;
 import com.atled.core.db.query.constraints.SqlRangeQueryConstraint;
-import com.atled.core.db.query.constraints.SqlVarcharQueryConstraint.VarcharQueryOperation;
+import com.atled.core.db.query.constraints.SqlRangeQueryConstraint.RangeQueryOperation;
 import com.atled.core.db.query.constraints.SqlVarcharQueryConstraint;
+import com.atled.core.db.query.constraints.SqlVarcharQueryConstraint.VarcharQueryOperation;
 
 import db.DangleDbManager;
 

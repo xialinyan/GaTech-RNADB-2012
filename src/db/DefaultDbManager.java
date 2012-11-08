@@ -1,10 +1,10 @@
 package db;
 
-import com.atled.core.db.DBManager;
+import com.atled.core.db.DbManager;
 
 
 
-public abstract class DefaultDbManager implements DBManager {
+public abstract class DefaultDbManager implements DbManager {
 
 	protected final String DB_NAME = "rnaparameditordb";
 	

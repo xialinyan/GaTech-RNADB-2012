@@ -31,7 +31,7 @@ public class VarcharFieldDefinition extends DatabaseFieldDefinition {
 		sqlBuilder.append(" VARCHAR(").append(fieldLength).append(")");
 		if (!this.fieldCharacteristics.isEmpty() || !this.fieldParameters.isEmpty()) {
 			for (FieldCharacteristics fc : fieldCharacteristics) {
-				if (fc != FieldCharacteristics.PRIMARY_KEY || 
+				if (fc != FieldCharacteristics.PRIMARY_KEY && 
 						fc != FieldCharacteristics.UNIQUE) {
 					sqlBuilder.append(" ").append(fc.getText());
 				}

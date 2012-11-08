@@ -168,4 +168,9 @@ public abstract class DatabaseFieldDefinition implements DatabaseEntity {
 			}
 		}
 	}
+	
+	@Override
+	public int hashCode() {
+		return name.hashCode();
+	}
 }

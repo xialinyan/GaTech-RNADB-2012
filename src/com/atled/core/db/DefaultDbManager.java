@@ -3,17 +3,20 @@ package com.atled.core.db;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 import com.atled.core.db.fields.definitions.DatabaseDefinition;
 import com.atled.core.exceptions.ExceptionHandler;
 
 
 
-public abstract class DefaultDbManager implements DBManager {
+public abstract class DefaultDbManager implements DbManager {
 
 	protected final DatabaseDefinition databaseDefinition; 
 	//String DB_NAME = "rnaparameditordb";
-	protected Connection con;
+	private Connection con;
+	private Statement dbStatement;
+	
 
 	public DefaultDbManager(DatabaseDefinition databaseDefinition) {
 		this.databaseDefinition = databaseDefinition;
@@ -33,11 +36,20 @@ public abstract class DefaultDbManager implements DBManager {
 			/**
 			 * @step Connect to correct database and create if necessary.
 			 */
-			con = DriverManager.getConnection("jdbc:derby:"+
-					databaseDefinition.getDbName() + ";create=true;");
+			String connectionString = "jdbc:derby:"+ databaseDefinition.getDbName() + 
+					";create=true;";
+			con = DriverManager.getConnection(connectionString);
 		} catch (SQLException e) {
 			ExceptionHandler.handle(e);
 		}
+	}
+	
+	@Override
+	public final boolean isConnected() {
+		try {
+			return con != null && !con.isClosed();
+		} catch (SQLException e) {	}
+		return false;
 	}
 	
 	@Override
@@ -60,4 +72,19 @@ public abstract class DefaultDbManager implements DBManager {
 		System.gc();
 	}
 
+	protected boolean executeSql(String sql) {
+		if (!isConnected()) {
+			return false;
+		}
+		try {
+			if (dbStatement == null) {
+				dbStatement = con.createStatement();
+			}
+			return dbStatement.execute(sql);
+		} catch (SQLException e) {
+			ExceptionHandler.handle(e);
+		}
+		return false;
+	}
+	
 }
