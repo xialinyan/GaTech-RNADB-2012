@@ -31,10 +31,10 @@ public class DangleRow extends DatabaseRow {
 		field = DangleModule.DANGLE_NUCLEOTIDE_FIELD;
 		fieldMap.put(field, DangleModule.getDangleNucletide(column));
 		
-		field = DangleModule.LEAD_NUCLEOTIDE_FIELD;
+		field = DangleModule.NUCLEOTIDE_5_FIELD;
 		fieldMap.put(field, DangleModule.getLeadNucletide(row));
 		
-		field = DangleModule.TAIL_NUCLEOTIDE_FIELD;
+		field = DangleModule.NUCLEOTIDE_3_FIELD;
 		fieldMap.put(field, DangleModule.getTailNucletide(column));
 
 		field = DangleModule.PAIR_TYPE_FIELD;
@@ -65,7 +65,7 @@ public class DangleRow extends DatabaseRow {
 	}
 	
 	public String getLeadNucleotide() {
-		Object obj = fieldMap.get(DangleModule.LEAD_NUCLEOTIDE_FIELD);
+		Object obj = fieldMap.get(DangleModule.NUCLEOTIDE_5_FIELD);
 		return obj == null ? null : (String) obj;
 	}
 	
@@ -80,7 +80,7 @@ public class DangleRow extends DatabaseRow {
 	}
 	
 	public String getTailNucleotide() {
-		Object obj = fieldMap.get(DangleModule.TAIL_NUCLEOTIDE_FIELD);
+		Object obj = fieldMap.get(DangleModule.NUCLEOTIDE_3_FIELD);
 		return obj == null ? null : (String) obj;
 	}
 	

@@ -1,4 +1,4 @@
-package turner99parsing;
+package parameditor.utils;
 
 public class Turner99Module {
 

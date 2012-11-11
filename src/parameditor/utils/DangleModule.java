@@ -12,8 +12,10 @@ import com.atled.core.db.fields.definitions.DatabaseFieldDefinition.FieldCharact
 import com.atled.core.db.fields.definitions.DatabaseTableDefinition;
 import com.atled.core.db.fields.definitions.VarcharFieldDefinition;
 import com.atled.core.db.query.SqlTableSelectQuery;
+import com.atled.core.db.query.constraints.SqlQueryConstraintCollection;
+import com.atled.core.db.query.constraints.SqlVarcharQueryConstraint;
+import com.atled.core.db.query.constraints.SqlVarcharQueryConstraint.VarcharQueryOperation;
 
-import db.DatabaseModule;
 
 public class DangleModule extends DatabaseModule {
 
@@ -29,13 +31,13 @@ public class DangleModule extends DatabaseModule {
 	public final static VarcharFieldDefinition PAIR_TYPE_FIELD = 
 			new VarcharFieldDefinition("pairTypeField", "PAIRTYPE", 4); // TODO enum field definition?
 	
-	public final static VarcharFieldDefinition LEAD_NUCLEOTIDE_FIELD = 
-			new VarcharFieldDefinition("leadNucleotideField", 
-			"LEADNUCLEOTIDE", 1); // TODO enum field definition?
+	public final static VarcharFieldDefinition NUCLEOTIDE_5_FIELD = 
+			new VarcharFieldDefinition("5' Nucleotide", 
+			"NUCEOTIDE5", 1); // TODO enum field definition?
 	
-	public final static VarcharFieldDefinition TAIL_NUCLEOTIDE_FIELD  = 
-			new VarcharFieldDefinition("tailNucleotideField", 
-			"TAILNUCLEOTIDE", 1); // TODO enum field definition?
+	public final static VarcharFieldDefinition NUCLEOTIDE_3_FIELD  = 
+			new VarcharFieldDefinition("3' Nucleotide", 
+			"NUCLEOTIDE3", 1); // TODO enum field definition?
 	
 	public final static VarcharFieldDefinition DANGLE_NUCLEOTIDE_FIELD 
 			= new VarcharFieldDefinition("dangleNucleotideField", 
@@ -62,8 +64,8 @@ public class DangleModule extends DatabaseModule {
 			List<DatabaseFieldDefinition> fields = 
 					new ArrayList<DatabaseFieldDefinition>();
 			fields.add(PAIR_TYPE_FIELD);
-			fields.add(LEAD_NUCLEOTIDE_FIELD);
-			fields.add(TAIL_NUCLEOTIDE_FIELD);
+			fields.add(NUCLEOTIDE_5_FIELD);
+			fields.add(NUCLEOTIDE_3_FIELD);
 			fields.add(DANGLE_NUCLEOTIDE_FIELD);
 			fields.add(ARRAY_INDEX_FIELD);
 			fields.add(PARAM_VALUE_FIELD);
@@ -100,13 +102,13 @@ public class DangleModule extends DatabaseModule {
 	
 	public static String getBasePairType(String lead, String tail) {
 		if (lead.equals("A")) {
-			return tail.equals("U") ? "WC" : "";
+			return tail.equals("U") ? WATSON_CRICK_BP : "";
 		} else if (lead.equals("C")) {
-			return tail.equals("G") ? "WC" : "";
+			return tail.equals("G") ? WATSON_CRICK_BP : "";
 		} else if (lead.equals("G")) {
-			return tail.equals("C") ? "WC" : tail.equals("U") ? "W" : "";
+			return tail.equals("C") ? WATSON_CRICK_BP : tail.equals("U") ? WOBBLE_BP : "";
 		} else if (lead.equals("U")) {
-			return tail.equals("A") ? "WC" : tail.equals("G") ? "W" : "";
+			return tail.equals("A") ? WATSON_CRICK_BP : tail.equals("G") ? WOBBLE_BP : "";
 		}
 		return null;
 	}
@@ -147,5 +149,16 @@ public class DangleModule extends DatabaseModule {
 	
 	public static SqlTableSelectQuery getStarTableQuery() {
 		return new SqlTableSelectQuery(DangleModule.DATABASE_TABLE_DEFINITION);
+	}
+	
+	public static SqlTableSelectQuery getCannonicalBPTableQuery() {
+		SqlQueryConstraintCollection constraints = getOrConstraintCollection();
+		constraints.addQuery(new SqlVarcharQueryConstraint(
+				DangleModule.PAIR_TYPE_FIELD, VarcharQueryOperation.EQUALS, 
+				WATSON_CRICK_BP));
+		constraints.addQuery(new SqlVarcharQueryConstraint(
+				DangleModule.PAIR_TYPE_FIELD, VarcharQueryOperation.EQUALS, WOBBLE_BP));
+		return new SqlTableSelectQuery(DangleModule.DATABASE_TABLE_DEFINITION,
+				constraints);
 	}
 }

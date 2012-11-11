@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Scanner;
 
 import parameditor.utils.DangleModule;
-import turner99parsing.Turner99Module;
+import parameditor.utils.Turner99Module;
 
 import com.atled.core.db.DbManager;
 import com.atled.core.db.fields.DatabaseRow;
@@ -20,8 +20,8 @@ import com.atled.core.db.query.constraints.SqlVarcharQueryConstraint.VarcharQuer
 import com.atled.core.exceptions.ExceptionHandler;
 import com.atled.core.logging.Log;
 
-import db.DangleDbManager;
 import db.entry.DangleRow;
+import db.turner99manager.DangleDatabaseManager;
 
 
 public class DatabaseExample {
@@ -126,7 +126,7 @@ public class DatabaseExample {
 	}
 	
 	private static DbManager exampleInit() {
-		DbManager manager = new DangleDbManager();
+		DbManager manager = new DangleDatabaseManager();
 		if (!manager.init(Turner99Module.DANGLE_TEST_FILENAME)) {
 			throw new RuntimeException("Failed to initalize database"); 
 		}

@@ -1,41 +1,22 @@
 package turner99parsing;
 
-import java.io.IOException;
-import java.util.List;
 
-public class StackFileIO implements MfeParameterFileIO {
+public class StackFileIO extends StandardGridFileIO {
 
-	public void validateFileName(String filename) throws Exception {
-		// TODO
+	public final static int NUM_ROWS = 16;
+	public final static int NUM_COLS = 16;
+	
+	@Override
+	public int getNumRows() {
+		return NUM_ROWS;
 	}
 	
 	@Override
-	public List<List<String>> read(String filename) throws IllegalArgumentException {
-		// TODO
-		/**
-		 * @step Ensure that filename is not null and file exists
-		 */
-		/**
-		 * @step parse the file and convert to <code>List</code> of <code>List</code> of <code>Strings</code>
-		 */
-		/**
-		 * @step return the parsed results
-		 */
-		return null;
+	public int getNumCols() {
+		return NUM_COLS;
 	}
 
-	@Override
-	public boolean export(String filename, List<List<String>> params) throws IOException {
+	public void validateFileName(String filename) throws Exception {
 		// TODO
-		/**
-		 * @step Ensure that filename is not null
-		 */
-		/**
-		 * @step get results as <code>List</code> of <code>List</code> of <code>Strings</code> from correct DbManager
-		 */
-		/**
-		 * @step return the aggregated results
-		 */
-		return false;
 	}
 }
