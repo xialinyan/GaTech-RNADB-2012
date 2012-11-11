@@ -5,7 +5,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 import com.atled.core.db.DefaultDbManager;
-import com.atled.core.db.definitions.DatabaseDefinition;
+import com.atled.core.db.fields.definitions.DatabaseDefinition;
 
 public class LoopDbManager extends DefaultDbManager {
 	

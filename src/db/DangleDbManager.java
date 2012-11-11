@@ -1,78 +1,32 @@
 package db;
 
+import java.io.IOException;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
+import parameditor.utils.DangleModule;
 import turner99parsing.DangleFileIO;
-import turner99parsing.Turner99Module;
 
-import com.atled.core.db.DbManager;
 import com.atled.core.db.DefaultDbManager;
-import com.atled.core.db.fields.DatabaseEntry;
-import com.atled.core.db.fields.definitions.DatabaseDefinition;
+import com.atled.core.db.fields.DatabaseRow;
 import com.atled.core.db.fields.definitions.DatabaseFieldDefinition;
-import com.atled.core.db.fields.definitions.DatabaseFieldDefinition.FieldCharacteristics;
-import com.atled.core.db.fields.definitions.DatabaseTableDefinition;
-import com.atled.core.db.fields.definitions.VarcharFieldDefinition;
+import com.atled.core.db.query.SqlTableSelectQuery;
+import com.atled.core.exceptions.ExceptionHandler;
+import com.atled.core.logging.Log;
 import com.atled.core.validation.ParameterChecker;
 
-import db.entry.DangleEntry;
+import db.entry.DangleRow;
 
 
 public class DangleDbManager extends DefaultDbManager {
 	
-	public final static DatabaseDefinition DATABASE_DEFINITION;
-	public final static DatabaseTableDefinition DATABASE_TABLE_DEFINITION;
-	public final static VarcharFieldDefinition PAIR_TYPE_FIELD;
-	public final static VarcharFieldDefinition LEAD_NUCLEOTIDE_FIELD;
-	public final static VarcharFieldDefinition TAIL_NUCLEOTIDE_FIELD;
-	public final static VarcharFieldDefinition DANGLE_NUCLEOTIDE_FIELD;
-	public final static VarcharFieldDefinition ARRAY_INDEX_FIELD;
-	public final static VarcharFieldDefinition PARAM_VALUE_FIELD;
-	
-	public final static DangleFileIO dangleFileIO;
-	
-	static {
-		PAIR_TYPE_FIELD = new VarcharFieldDefinition("pairTypeField", 
-				"pairTypeField", 4); // TODO enum field definition?
-		LEAD_NUCLEOTIDE_FIELD = new VarcharFieldDefinition("leadNucleotideField", 
-				"leadNucleotideField", 1); // TODO enum field definition?
-		TAIL_NUCLEOTIDE_FIELD = new VarcharFieldDefinition("tailNucleotideField", 
-				"tailNucleotideField", 1); // TODO enum field definition?
-		DANGLE_NUCLEOTIDE_FIELD = new VarcharFieldDefinition("dangleNucleotideField", 
-				"dangleNucleotideField", 1); // TODO enum field definition?
-		List<FieldCharacteristics> fieldChars = 
-				new ArrayList<DatabaseFieldDefinition.FieldCharacteristics>();
-		fieldChars.add(FieldCharacteristics.PRIMARY_KEY);
-		fieldChars.add(FieldCharacteristics.NOT_NULL);
-		ARRAY_INDEX_FIELD = new VarcharFieldDefinition("arrayIndexField", 
-				"arrayIndexField", fieldChars, 5);
-		PARAM_VALUE_FIELD = new VarcharFieldDefinition("paramValueField", 
-				"paramValueField", 10);
-		{
-			List<DatabaseFieldDefinition> fields = 
-					new ArrayList<DatabaseFieldDefinition>();
-			fields.add(PAIR_TYPE_FIELD);
-			fields.add(LEAD_NUCLEOTIDE_FIELD);
-			fields.add(TAIL_NUCLEOTIDE_FIELD);
-			fields.add(DANGLE_NUCLEOTIDE_FIELD);
-			fields.add(ARRAY_INDEX_FIELD);
-			fields.add(PARAM_VALUE_FIELD);
-			DATABASE_TABLE_DEFINITION = new DatabaseTableDefinition("Dangle", "dangle", 
-					Collections.unmodifiableList(fields));
-		}
-		List<DatabaseTableDefinition> tables = new ArrayList<DatabaseTableDefinition>();
-		tables.add(DATABASE_TABLE_DEFINITION);
-		DATABASE_DEFINITION = new DatabaseDefinition("Param Editor GUI - Dangle", 
-				"parameditorgui_dangle", tables);
-		
-		dangleFileIO = new DangleFileIO();
-	}
+	@SuppressWarnings("unused")
+	private final static Log log = Log.getInstance(DangleDbManager.class);
 	
 	public DangleDbManager() {
-		super(DangleDbManager.DATABASE_DEFINITION);
+		super(DangleModule.DATABASE_DEFINITION);
 	}
 	
 	@Override
@@ -84,11 +38,13 @@ public class DangleDbManager extends DefaultDbManager {
 		/**
 		 * it does exist, this method truncates the table.
 		 */
-		String dropSql = DATABASE_TABLE_DEFINITION.getDropStatement();
-		if (!executeSql(dropSql)) {
-			return false;
+		if (tableExists(DangleModule.DATABASE_TABLE_DEFINITION)) {
+			String dropSql = DangleModule.DATABASE_TABLE_DEFINITION.getDropStatement();
+			if (!executeSql(dropSql)) {
+				return false;
+			}
 		}
-		String createSql = DATABASE_TABLE_DEFINITION.getSqlCreateStatement();
+		String createSql = DangleModule.DATABASE_TABLE_DEFINITION.getSqlCreateStatement();
 		if (!executeSql(createSql)) {
 			return false;
 		}
@@ -96,11 +52,11 @@ public class DangleDbManager extends DefaultDbManager {
 		 * @step This method should use a class which implements the ReadFile interface 
 		 * to get the parameters to insert.
 		 */
-		List<List<String>> paramArray = dangleFileIO.read(fileName);
-		List<DatabaseEntry> entryList = new ArrayList<DatabaseEntry>();
+		List<List<String>> paramArray = DangleModule.dangleFileIO.read(fileName);
+		List<DatabaseRow> entryList = new ArrayList<DatabaseRow>();
 		for (int i=0;i<paramArray.size();i++) {
 			for (int j=0;j<paramArray.get(i).size();j++) {
-				entryList.add(new DangleEntry(i, j, paramArray.get(i).get(j)));
+				entryList.add(new DangleRow(i, j, paramArray.get(i).get(j)));
 			}
 		}
 		/**
@@ -115,9 +71,9 @@ public class DangleDbManager extends DefaultDbManager {
 		return insertResult;
 	}
 
-	private boolean insert(List<DatabaseEntry> array) {
+	private boolean insert(List<DatabaseRow> array) {
 		
-		for (DatabaseEntry entry : array) {
+		for (DatabaseRow entry : array) {
 			/**
 			 * @step convert <code>List</code> of <code>String</code> to update SQL 
 			 * query.
@@ -137,7 +93,7 @@ public class DangleDbManager extends DefaultDbManager {
 	}
 
 	@Override
-	public boolean update(DatabaseEntry entry, DatabaseFieldDefinition updateField) {
+	public boolean update(DatabaseRow entry, DatabaseFieldDefinition updateField) {
 		ParameterChecker.notNull("entry", entry);
 		/**
 		 * @step execute query
@@ -151,30 +107,61 @@ public class DangleDbManager extends DefaultDbManager {
 	}
 
 	@Override
-	public ResultSet search(List<String> array) {
-		// TODO 
+	public List<DatabaseRow> search(SqlTableSelectQuery query) {
 		/**
 		 * @step ensure db is connected and initialized
 		 */
-		/**
-		 * @step convert <code>List</code> of <code>String</code> to update SQL query.
-		 */
+		if (!isConnected()) {
+			return null;
+		}
 		/**
 		 * @step execute query
 		 */
+		ResultSet results = executeSqlQuery(query.generateSql());
 		/**
 		 * @step return results set
 		 */
-		return null;
+		List<DatabaseRow> entries = new ArrayList<DatabaseRow>();
+		try {
+			while (results.next()) {
+				String key = results.getString(
+						DangleModule.ARRAY_INDEX_FIELD.getDbFieldName());
+				String value = results.getString(
+						DangleModule.PARAM_VALUE_FIELD.getDbFieldName());
+				DatabaseRow entry = new DangleRow(key, value);
+				entries.add(entry);
+			}
+		} catch (SQLException e) {
+			ExceptionHandler.handle(e);
+		}
+		return entries;
 	}
 	
-	public static void main(String[] args) {
-		// Test Sql Create Statements
-		System.out.println(DangleDbManager.DATABASE_TABLE_DEFINITION
-				.getSqlCreateStatement());
+	@Override
+	public boolean export(String filename) {
+		String[][] arr = new String[DangleFileIO.NUM_ROWS][DangleFileIO.NUM_COLS];
+		List<DatabaseRow> rows = search(DangleModule.getStarTableQuery());
+		for (DatabaseRow row : rows) {
+			DangleRow dRow = (DangleRow) row;
+			int rowIndex = DangleModule.getRowFromKey(dRow.getArrayIndex());
+			int colIndex = DangleModule.getColumnFromKey(dRow.getArrayIndex());
+			arr[rowIndex][colIndex] = dRow.getParamValue();
+		}
+		List<List<String>> params = new ArrayList<List<String>>();
+		for (int i=0;i<arr.length;i++) {
+			List<String> temp = new ArrayList<String>();
+			for (int j=0;j<arr[i].length;j++) {
+				temp.add(arr[i][j]);
+			}
+			params.add(temp);
+		}
 		
-		// Test Dangle Db Manager Functionality
-		DbManager manager = new DangleDbManager();
-		manager.init(Turner99Module.DANGLE_TEST_FILENAME);
+		try {
+			DangleModule.dangleFileIO.export(filename, params);
+		} catch (IOException e) {
+			ExceptionHandler.handle(e);
+			return false;
+		}
+		return true;
 	}
 }

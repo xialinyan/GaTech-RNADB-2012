@@ -2,8 +2,8 @@ package com.atled.core.db.query;
 
 import java.util.List;
 
-import com.atled.core.db.definitions.DatabaseFieldDefinition;
-import com.atled.core.db.definitions.DatabaseTableDefinition;
+import com.atled.core.db.fields.definitions.DatabaseFieldDefinition;
+import com.atled.core.db.fields.definitions.DatabaseTableDefinition;
 import com.atled.core.db.query.constraints.SqlQueryConstraintCollection;
 
 public class SqlTableSelectQuery {
@@ -23,11 +23,10 @@ public class SqlTableSelectQuery {
 	
 	public String generateSql() {
 		StringBuilder sqlBuilder = new StringBuilder();
-		sqlBuilder.append("SELECT * FROM `").append(tableDefinition.getName()).append("`");
+		sqlBuilder.append("SELECT * FROM ").append(tableDefinition.getDbName()).append("");
 		if (!constraintCollection.isEmpty()) {			
 			sqlBuilder.append(" WHERE ").append(constraintCollection.generateSql());
 		}
-		sqlBuilder.append(";");
 		return sqlBuilder.toString();
 	}
 	
@@ -36,17 +35,14 @@ public class SqlTableSelectQuery {
 			throw new IllegalArgumentException("Must select at least one field");
 		}
 		StringBuilder sqlBuilder = new StringBuilder();
-		sqlBuilder.append("SELECT `").append(fieldDefinitions.get(0).getName());
-		sqlBuilder.append("`");
+		sqlBuilder.append("SELECT ").append(fieldDefinitions.get(0).getDbFieldName());
 		for (int i=1;i<fieldDefinitions.size();i++) {
-			sqlBuilder.append(", `").append(fieldDefinitions.get(i).getName());
-			sqlBuilder.append("`");
+			sqlBuilder.append(", ").append(fieldDefinitions.get(i).getDbFieldName());
 		}
-		sqlBuilder.append(" FROM `").append(tableDefinition.getName()).append("`");
+		sqlBuilder.append(" FROM ").append(tableDefinition.getDbName());
 		if (!constraintCollection.isEmpty()) {			
 			sqlBuilder.append(" WHERE ").append(constraintCollection.generateSql());
 		}
-		sqlBuilder.append(";");
 		return sqlBuilder.toString();
 	}
 }

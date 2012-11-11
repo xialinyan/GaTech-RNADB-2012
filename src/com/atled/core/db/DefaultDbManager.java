@@ -1,16 +1,23 @@
 package com.atled.core.db;
 
 import java.sql.Connection;
+import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
 import com.atled.core.db.fields.definitions.DatabaseDefinition;
+import com.atled.core.db.fields.definitions.DatabaseTableDefinition;
 import com.atled.core.exceptions.ExceptionHandler;
+import com.atled.core.logging.Log;
+import com.atled.core.validation.ParameterChecker;
 
 
 
 public abstract class DefaultDbManager implements DbManager {
+	
+	private final static Log log = Log.getInstance(DefaultDbManager.class);
 
 	protected final DatabaseDefinition databaseDefinition; 
 	//String DB_NAME = "rnaparameditordb";
@@ -80,11 +87,48 @@ public abstract class DefaultDbManager implements DbManager {
 			if (dbStatement == null) {
 				dbStatement = con.createStatement();
 			}
-			return dbStatement.execute(sql);
+			log.debug(sql);
+			dbStatement.execute(sql);
+			return true;
 		} catch (SQLException e) {
 			ExceptionHandler.handle(e);
 		}
 		return false;
 	}
+
+	protected ResultSet executeSqlQuery(String sql) {
+		if (!isConnected()) {
+			return null;
+		}
+		try {
+			if (dbStatement == null) {
+				dbStatement = con.createStatement();
+			}
+			log.debug(sql);
+			return dbStatement.executeQuery(sql);
+		} catch (SQLException e) {
+			ExceptionHandler.handle(e);
+		}
+		return null;
+	}
 	
+	protected boolean tableExists(DatabaseTableDefinition tableDefinition) {
+		ParameterChecker.notNull("tableDefinition", tableDefinition);
+		try {
+			DatabaseMetaData metadata = null;
+			metadata = con.getMetaData();
+//			String[] names = { "TABLE"};
+			ResultSet tableNames = metadata.getTables( null, null, null, null);
+			while( tableNames.next())
+			{
+				String tab = tableNames.getString( "TABLE_NAME");
+				if (tab.equals(tableDefinition.getDbName())) {
+					return true;
+				}
+			}
+		} catch (SQLException e) {
+			ExceptionHandler.handle(e);
+		}
+		return false;
+	}
 }

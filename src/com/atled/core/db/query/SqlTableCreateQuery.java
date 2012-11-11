@@ -2,8 +2,8 @@ package com.atled.core.db.query;
 
 import java.util.List;
 
-import com.atled.core.db.definitions.DatabaseFieldDefinition;
-import com.atled.core.db.definitions.DatabaseTableDefinition;
+import com.atled.core.db.fields.definitions.DatabaseFieldDefinition;
+import com.atled.core.db.fields.definitions.DatabaseTableDefinition;
 
 public class SqlTableCreateQuery {
 
@@ -15,7 +15,7 @@ public class SqlTableCreateQuery {
 	
 	public String generateSql() {
 		StringBuilder sqlBuilder = new StringBuilder();
-		sqlBuilder.append("CREATE TABLE `").append(tableDefinition.getName()).append("` (");
+		sqlBuilder.append("CREATE TABLE ").append(tableDefinition.getDbName()).append(" (");
 		List<DatabaseFieldDefinition> fieldDefinitions = tableDefinition.getFieldDefinitions();
 		if (!fieldDefinitions.isEmpty()) {
 			sqlBuilder.append(fieldDefinitions.get(0).getSqlCreateStatement());

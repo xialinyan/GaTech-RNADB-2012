@@ -1,6 +1,6 @@
 package com.atled.core.db.query.constraints;
 
-import com.atled.core.db.definitions.DatabaseFieldDefinition;
+import com.atled.core.db.fields.definitions.DatabaseFieldDefinition;
 
 public abstract class SqlFieldQueryConstraint implements SqlQueryConstraintGenerator {
 

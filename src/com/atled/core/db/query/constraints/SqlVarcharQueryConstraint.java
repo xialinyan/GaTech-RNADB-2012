@@ -1,6 +1,6 @@
 package com.atled.core.db.query.constraints;
 
-import com.atled.core.db.definitions.DatabaseFieldDefinition;
+import com.atled.core.db.fields.definitions.DatabaseFieldDefinition;
 
 public class SqlVarcharQueryConstraint extends SqlFieldQueryConstraint {
 
@@ -44,7 +44,7 @@ public class SqlVarcharQueryConstraint extends SqlFieldQueryConstraint {
 	@Override
 	public String generateSql() {
 		StringBuilder sqlBuilder = new StringBuilder();
-		sqlBuilder.append("`").append(super.getField().getName()).append("`");
+		sqlBuilder.append(super.getField().getDbFieldName());
 		sqlBuilder.append(operation.sqlText).append(operation.queryPrefix);
 		sqlBuilder.append(queryValue).append(operation.queryPostfix);
 		return sqlBuilder.toString();

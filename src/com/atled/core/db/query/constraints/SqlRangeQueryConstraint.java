@@ -1,8 +1,8 @@
 package com.atled.core.db.query.constraints;
 
-import com.atled.core.db.definitions.DatabaseFieldDefinition;
+import com.atled.core.db.fields.definitions.DatabaseFieldDefinition;
 
-public class SqlRangeQueryConstraint<T extends Comparable<T>> extends SqlFieldQueryConstraint {
+public class SqlRangeQueryConstraint extends SqlFieldQueryConstraint {
 
 	public static enum RangeQueryOperation {
 		LESS_THAN("<"),
@@ -25,28 +25,28 @@ public class SqlRangeQueryConstraint<T extends Comparable<T>> extends SqlFieldQu
 	}
 	
 	private final RangeQueryOperation operation;
-	private final T queryMinValue;
-	private final T queryMaxValue;
+	private final Object queryMinValue;
+	private final Object queryMaxValue;
 
 	public RangeQueryOperation getOperation() {
 		return operation;
 	}
 
-	public T getQueryMinValue() {
+	public Object getQueryMinValue() {
 		return queryMinValue;
 	}
 
-	public T getQueryMaxValue() {
+	public Object getQueryMaxValue() {
 		return queryMaxValue;
 	}
 	
 	public SqlRangeQueryConstraint(DatabaseFieldDefinition field, RangeQueryOperation operation, 
-			T queryValue) {
+			Object queryValue) {
 		this(field, operation, queryValue, null);
 	}
 	
 	public SqlRangeQueryConstraint(DatabaseFieldDefinition field, RangeQueryOperation operation, 
-			T queryMinValue, T queryMaxValue) {
+			Object queryMinValue, Object queryMaxValue) {
 		super(field);
 		this.operation = operation;
 		this.queryMinValue = queryMinValue;
@@ -54,7 +54,7 @@ public class SqlRangeQueryConstraint<T extends Comparable<T>> extends SqlFieldQu
 		checkValidState(operation, queryMinValue, queryMaxValue);
 	}
 	
-	private void checkValidState(RangeQueryOperation op, T min, T max) {
+	private void checkValidState(RangeQueryOperation op, Object min, Object max) {
 		if (min == null) {
 			throw new IllegalArgumentException("At least one number must be provided to a " +
 					"range query.");
@@ -74,10 +74,6 @@ public class SqlRangeQueryConstraint<T extends Comparable<T>> extends SqlFieldQu
 			if (max == null) {
 				throw new IllegalArgumentException("Two arguments must be provided to a " +
 						"double bounded range.");
-			}
-			if (min.compareTo(max) >= 0) {
-				throw new IllegalArgumentException("Minimum argument in range cannot be greater " +
-						"than maximum.");
 			}
 			break;
 		default:
@@ -108,7 +104,7 @@ public class SqlRangeQueryConstraint<T extends Comparable<T>> extends SqlFieldQu
 
 	private String getSingleParamQueryString(String text, String value) {
 		StringBuilder sqlBuilder = new StringBuilder();
-		sqlBuilder.append("`").append(super.getField().getName()).append("`");
+		sqlBuilder.append(super.getField().getDbFieldName());
 		sqlBuilder.append(text).append("'").append(queryMinValue.toString());
 		return sqlBuilder.append("'").toString();	
 	}

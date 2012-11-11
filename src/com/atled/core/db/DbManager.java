@@ -1,10 +1,10 @@
 package com.atled.core.db;
 import java.io.IOException;
-import java.sql.ResultSet;
 import java.util.List;
 
-import com.atled.core.db.fields.DatabaseEntry;
+import com.atled.core.db.fields.DatabaseRow;
 import com.atled.core.db.fields.definitions.DatabaseFieldDefinition;
+import com.atled.core.db.query.SqlTableSelectQuery;
 public interface DbManager {
 	
 	/**
@@ -33,7 +33,7 @@ public interface DbManager {
 	 * @param array
 	 * @return
 	 */
-	public boolean update(DatabaseEntry entry, DatabaseFieldDefinition updateField);
+	public boolean update(DatabaseRow entry, DatabaseFieldDefinition updateField);
 	
 	/**
 	 * @step ensure db is connected and initialized
@@ -44,7 +44,7 @@ public interface DbManager {
 	 * @param array We will want to take in an array with params in the order of the table
 	 * @return
 	 */
-	public ResultSet search(List<String> array);
+	public List<DatabaseRow> search(SqlTableSelectQuery query);
 	
 	/**
 	 * @step Connect to correct database and create if necessary.
@@ -58,4 +58,6 @@ public interface DbManager {
 	 * @step start garbage collector
 	 */
 	public void closeConnection();
+	
+	public boolean export(String filename);
 }

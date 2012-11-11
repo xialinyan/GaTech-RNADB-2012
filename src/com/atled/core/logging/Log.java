@@ -23,28 +23,28 @@ public class Log {
 	
 	public void debug(Object messageObj) {
 		ParameterChecker.notNull("messageObj", messageObj);
-		if (logLevel.greaterThanOrEqual(LogLevel.DEBUG)) {
+		if (logLevel.shouldLog(LogLevel.DEBUG)) {
 			print(messageObj.toString(), LogLevel.DEBUG);
 		}
 	}
 	
 	public void info(Object messageObj) {
 		ParameterChecker.notNull("messageObj", messageObj);
-		if (logLevel.greaterThanOrEqual(LogLevel.INFO)) {
+		if (logLevel.shouldLog(LogLevel.INFO)) {
 			print(messageObj.toString(), LogLevel.INFO);
 		}
 	}
 	
 	public void error(Object messageObj) {
 		ParameterChecker.notNull("messageObj", messageObj);
-		if (logLevel.greaterThanOrEqual(LogLevel.ERROR)) {
+		if (logLevel.shouldLog(LogLevel.ERROR)) {
 			print(messageObj.toString(), LogLevel.ERROR);
 		}
 	}
 	
 	public void error(Exception exceptionObj) {
 		ParameterChecker.notNull("exceptionObj", exceptionObj);
-		if (logLevel.greaterThanOrEqual(LogLevel.ERROR)) {
+		if (logLevel.shouldLog(LogLevel.ERROR)) {
 			printError(exceptionObj.getMessage(), LogLevel.ERROR);
 			printError(exceptionObj.getStackTrace().toString(), LogLevel.ERROR);
 		}
@@ -52,7 +52,7 @@ public class Log {
 	
 	public void production(Object messageObj) {
 		ParameterChecker.notNull("messageObj", messageObj);
-		if (logLevel.greaterThanOrEqual(LogLevel.PRODUCTION)) {
+		if (logLevel.shouldLog(LogLevel.PRODUCTION)) {
 			print(messageObj.toString(), LogLevel.PRODUCTION);
 		}
 	}
@@ -73,7 +73,7 @@ public class Log {
 	
 	private String getMessageHeader(LogLevel logLevel) {
 		StringBuilder sb = new StringBuilder(instanceClass.getSimpleName());
-		sb.append(HEADER_SEPERATOR).append(Calendar.getInstance().toString());
+		sb.append(HEADER_SEPERATOR).append(Calendar.getInstance().getTimeInMillis());
 		sb.append(HEADER_SEPERATOR).append(logLevel.name());
 		return sb.append(HEADER_SEPERATOR).toString();
 	}

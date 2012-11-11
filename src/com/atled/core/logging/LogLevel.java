@@ -17,7 +17,7 @@ public enum LogLevel {
 		return this.level;
 	}
 	
-	public boolean greaterThanOrEqual(LogLevel otherLevel) {
-		return this.getLevel() >= otherLevel.getLevel();
+	public boolean shouldLog(LogLevel otherLevel) {
+		return otherLevel.getLevel() >= this.getLevel();
 	}
 }

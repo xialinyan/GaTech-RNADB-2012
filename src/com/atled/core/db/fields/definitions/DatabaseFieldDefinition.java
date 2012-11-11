@@ -173,4 +173,11 @@ public abstract class DatabaseFieldDefinition implements DatabaseEntity {
 	public int hashCode() {
 		return name.hashCode();
 	}
+	
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("FieldDefinition{").append(name).append("}");
+		return sb.toString();
+	}
 }

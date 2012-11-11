@@ -8,10 +8,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+import com.atled.core.exceptions.ExceptionHandler;
+
 public class DangleFileIO implements MfeParameterFileIO {
 
+	public final static int NUM_ROWS = 8;
+	public final static int NUM_COLS = 16;
+	
 	public void validateFileName(String filename) throws Exception {
-		
+		// TODO
 	}
 	
 	@Override
@@ -27,28 +32,29 @@ public class DangleFileIO implements MfeParameterFileIO {
 		/**
 		 * @step parse the file and convert to <code>List</code> of <code>List</code> of <code>Strings</code>
 		 */
-		double[][] arr = null;
 		Scanner scan = null;
 		List<List<String>> returnList = new ArrayList<List<String>>();
 		try {
 			scan = new Scanner(new File(filename));
-			arr = new double[8][16];
 			int i=0;
-			for (;i<arr.length && scan.hasNextLine();i++) {
+			for (;i<NUM_ROWS && scan.hasNextLine();i++) {
 				String[] sarr = scan.nextLine().split("\\s+");
 				List<String> tempList = new ArrayList<String>();
-				if (sarr.length == 16) {
-					for (int j=0;j<sarr.length;j++) {
+				if (sarr.length == NUM_COLS) {
+					for (int j=0;j<NUM_COLS;j++) {
 						if (sarr[j].trim().equals("inf")) {
 							tempList.add("inf");
 						} else {
 							Double.parseDouble(sarr[j].trim());
-							tempList.add("" + arr[i][j]);
+							tempList.add(sarr[j]);
 						}
 					}
 				} else {
-					// Something bad happened
+					ExceptionHandler.handle(new Turner99FormatException("Incorrect " +
+							"number of columns (" + sarr.length + ") on row " + i));
+					return null;
 				}
+				returnList.add(tempList);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -60,7 +66,7 @@ public class DangleFileIO implements MfeParameterFileIO {
 		/**
 		 * @step return the parsed results
 		 */
-		return arr == null ? null : returnList;
+		return returnList;
 	}
 
 	@Override
